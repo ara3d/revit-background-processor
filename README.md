@@ -37,7 +37,7 @@ We would appreciate learning about any usage of this project.
 # Acknowledgement
 
 This work is sponsored by HOK. 
-Special thanks to Greg Schleussner. 
+Special thanks to Greg Schleusner. 
 
 
 
