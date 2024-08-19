@@ -12,7 +12,36 @@ blocking the UI.
 It uses a queue to contain work items and uses the Revit [UIApplication.Idling](https://www.revitapidocs.com/2019/e233027b-ba8c-0bd1-37b7-93a066efa5a3.htm) 
 event to process items from the queue, within an alotted time slot. 
 
-This address the issue that Revit is single-threaded. 
+This addresses the issue that Revit is single-threaded. 
+
+# Next Steps 
+
+There challenges remain: 
+1. the frequency of idle events is inconsistent
+2. do not happen if Revit is a background state. 
+3. When "idle" message is too frequent the CPU resources may get hogged    
+
+Jeremy Tammik describes the issue here, and suggests using an External event: 
+https://thebuildingcoder.typepad.com/blog/2013/12/replacing-an-idling-event-handler-by-an-external-event.html
+
+This could be added as an option to the current library: by creating an external event and a thread that triggers work periodically.  
+
+However two outstanding problems with that approach are:
+
+1. Revit does not actually call the external event Execute method until a cursor movement or some other system event wakes it up.
+2. External events won't fire if Revit doesn't have focus.
+   
+The beginnings of a solution are decribed here: https://adndevblog.typepad.com/aec/2013/07/tricks-to-force-trigger-idling-event.html, but note 
+that the code there does not actually work.
+
+Some options to explore are the following, which execute either on a separate thread or process,:
+
+1. explicitly moving the mouse a tiny bit
+2. posting the windows message for a mouse move event to the main Revit window
+
+The final solution may involve chained idle events, along with an external event that checks for changes less frequently  
+
+More empirical data needs to be gathered.  
 
 # Difference from Revit.Async
 
@@ -37,7 +66,8 @@ We would appreciate learning about any usage of this project.
 # Acknowledgement
 
 This work is sponsored by HOK. 
-Special thanks to Greg Schleusner. 
+Thank you to Jeremey Tammik for valuable feedback. 
+Special thanks to Greg Schleusner for starting and organizing the project.  
 
 
 
